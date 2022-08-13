@@ -1,0 +1,47 @@
+---
+---
+- hosts: nginx_server
+  tasks:
+  - name: install nginx
+    apt:
+      name: nginx
+      state: latest
+  become: true    
+
+  - name: creating my www
+    file:
+      path: /var/www/myhtml
+      state: directory
+      mode: '0775'
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+
+  - name: delete nginx sites-enabled/default
+    file:
+      path: /etc/nginx/sites-enabled/default
+      state: absent
+    notify: restart nginx
+ 
+  - name: copy my html files to the created dir by me above
+    copy:
+      src: ./index.html
+      dest: /var/www/myhtml/index.html
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: '0644'
+ 
+  - name: copy nginx myhtml.conf
+    template:
+      src: myhtml.conf
+      dest: /etc/nginx/sites-enabled/myhtml.conf
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: '0644'
+    notify: restart nginx
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+        
