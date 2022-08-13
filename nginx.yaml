@@ -13,8 +13,8 @@
       path: /var/www/myhtml
       state: directory
       mode: '0775'
-      owner: "{{ ansible_user }}"
-      group: "{{ ansible_user }}"
+      owner: "ubuntu" 
+      group: "ubuntu" 
 
   - name: delete nginx sites-enabled/default
     file:
@@ -26,16 +26,16 @@
     copy:
       src: ./index.html
       dest: /var/www/myhtml/index.html
-      owner: "{{ ansible_user }}"
-      group: "{{ ansible_user }}"
+      owner: "ubuntu"
+      group: "ubuntu"
       mode: '0644'
  
-  - name: copy nginx myhtml.conf
+  - name: copy nginx nginx.conf
     template:
       src: myhtml.conf
-      dest: /etc/nginx/sites-enabled/myhtml.conf
-      owner: "{{ ansible_user }}"
-      group: "{{ ansible_user }}"
+      dest: /etc/nginx/sites-enabled/nginx.conf
+      owner: "ubuntu" 
+      group: "ubuntu" 
       mode: '0644'
     notify: restart nginx
 
